@@ -53,6 +53,33 @@ def _run(cmd: list[str], check: bool = False) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, capture_output=True, text=True, check=check)
 
 
+
+
+
+
+@task(name="clone-or-pull-repo")
+def task_clone_repo(repo_url: str = "https://github.com/TON_USERNAME/ml_project.git"):
+    """
+    Clone the project repo if not present, or pull latest changes if already cloned.
+    """
+    logger = get_run_logger()
+    import os
+
+    project_dir = os.path.basename(repo_url).replace(".git", "")
+
+    if os.path.exists(os.path.join(project_dir, ".git")):
+        logger.info(f"📥 Repo already cloned — pulling latest changes...")
+        result = _run(["git", "-C", project_dir, "pull"])
+    else:
+        logger.info(f"📦 Cloning repo: {repo_url}")
+        result = _run(["git", "clone", repo_url])
+
+    if result.returncode == 0:
+        logger.info("✅ Repo up to date.")
+    else:
+        logger.warning(f"⚠️  Git error:\n{result.stderr}")
+    return result.returncode
+
 # ============================================================================
 # TASKS – Section 1 : Infrastructure
 # ============================================================================
@@ -278,6 +305,9 @@ def flow_all():
     Full pipeline:
     install → code quality → prepare data → train → save → evaluate
     """
+    # Step 0 – Clone / pull repo
+    task_clone_repo()
+
     # Step 1 – Install dependencies
     task_install_dependencies()
 
