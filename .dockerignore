@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+*.pyc
+.prefect/
+mlruns/
+mlflow.db
+mlflow_ui.log
+uvicorn.log
+Churn_Modelling.csv
+test_pipeline.py
+.pytest_cache/
+deploiement_prefect.py
+pipeline_prefect.py
+main.py
+*.log
+*.db
