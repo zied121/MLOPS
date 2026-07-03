@@ -1,0 +1,11 @@
+pandas
+scikit-learn
+joblib
+matplotlib
+seaborn
+numpy
+prefect
+black
+flake8
+bandit
+pytest
